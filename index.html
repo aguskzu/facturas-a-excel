@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>Facturas a Excel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f7f8;
+      --surface: #ffffff;
+      --surface-2: #eef2f3;
+      --surface-3: #e5eaec;
+      --text: #152125;
+      --muted: #5a686d;
+      --line: #d7dfe2;
+      --accent: #087f6a;
+      --accent-strong: #056655;
+      --accent-soft: #dff2ed;
+      --warn: #a75c00;
+      --warn-soft: #fff0d8;
+      --danger: #bb3a3a;
+      --danger-soft: #fce8e7;
+      --focus: #1a9e87;
+      --shadow: 0 14px 36px rgba(25, 46, 52, .08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101718;
+        --surface: #182123;
+        --surface-2: #202b2d;
+        --surface-3: #2b3739;
+        --text: #edf4f3;
+        --muted: #aab8b8;
+        --line: #344346;
+        --accent: #59c8b3;
+        --accent-strong: #7dd8c7;
+        --accent-soft: #173c36;
+        --warn: #ffc06b;
+        --warn-soft: #45351d;
+        --danger: #ff9b98;
+        --danger-soft: #492728;
+        --focus: #6bd2bf;
+        --shadow: 0 14px 36px rgba(0, 0, 0, .24);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.45;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--focus) 45%, transparent);
+      outline-offset: 2px;
+    }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 42px 0 64px; }
+    .panel { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 18px; overflow: hidden; }
+    .upload-panel { padding: 20px; }
+    .dropzone {
+      position: relative; min-height: 220px; display: grid; place-items: center; text-align: center;
+      border: 2px dashed var(--line); border-radius: 12px; background: var(--surface-2);
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .dropzone.drag { border-color: var(--accent); background: var(--accent-soft); }
+    .drop-content { padding: 34px 20px; max-width: 620px; }
+    .upload-mark { width: 50px; height: 50px; margin: 0 auto 14px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+    .dropzone h2 { margin: 0 0 6px; font-size: 1.28rem; letter-spacing: -.02em; }
+    .dropzone p { margin: 0; color: var(--muted); font-size: .93rem; }
+    .upload-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .upload-hint { margin-top: 16px; display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: .8rem; }
+    .upload-hint .icon { width: 15px; height: 15px; color: var(--accent); }
+    .process {
+      margin-top: 14px; padding: 15px 18px; display: grid; grid-template-columns: repeat(3, 1fr);
+      background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    }
+    .step { min-width: 0; display: flex; align-items: center; justify-content: center; gap: 11px; padding: 2px 18px; }
+    .step + .step { border-left: 1px solid var(--line); }
+    .step-number { width: 27px; height: 27px; flex: 0 0 27px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font: 500 .78rem "DM Mono", monospace; }
+    .step-text { min-width: 0; }
+    .step strong { display: block; font-size: .87rem; line-height: 1.2; }
+    .step span:last-child { display: block; margin-top: 2px; color: var(--muted); font-size: .74rem; line-height: 1.25; }
+    .btn {
+      min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: 0; border-radius: 9px; padding: 0 16px; cursor: pointer; font-weight: 650;
+      background: var(--accent); color: #fff; transition: background .15s ease, transform .15s ease;
+    }
+    .btn:hover { background: var(--accent-strong); }
+    .btn:active { transform: translateY(1px); }
+    .btn.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+    .btn.secondary:hover { background: var(--surface-3); }
+    .btn.ghost { background: transparent; color: var(--accent); padding-inline: 10px; }
+    .btn.ghost:hover { background: var(--accent-soft); }
+    .btn.danger { color: var(--danger); }
+    .btn.danger.secondary { background: var(--surface); border-color: var(--line); }
+    .btn.danger.secondary:hover { background: var(--danger-soft); }
+    .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
+    .icon { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    input[type="file"] { display: none; }
+    .work { margin-top: 20px; }
+    .work[hidden] { display: none; }
+    .work-head { padding: 17px 20px; display: flex; gap: 16px; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); }
+    .work-title { display: flex; align-items: baseline; gap: 9px; }
+    .work-title h2 { margin: 0; font-size: 1.04rem; }
+    .count { color: var(--muted); font-size: .85rem; }
+    .work-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+    .progress-wrap { padding: 12px 20px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+    .progress-wrap[hidden] { display: none; }
+    .progress-line { display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: .82rem; margin-bottom: 7px; }
+    .progress { height: 7px; border-radius: 99px; overflow: hidden; background: var(--surface-3); }
+    .progress > div { height: 100%; width: 0; background: var(--accent); transition: width .2s linear; }
+    .notice { margin: 16px 20px 0; padding: 11px 13px; border-radius: 8px; font-size: .86rem; display: flex; align-items: flex-start; gap: 9px; }
+    .notice[hidden] { display: none; }
+    .notice.warn { background: var(--warn-soft); color: var(--warn); }
+    .notice.error { background: var(--danger-soft); color: var(--danger); }
+    .table-scroll { padding: 14px 20px 20px; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th { padding: 8px 7px; color: var(--muted); text-align: left; font-size: .72rem; font-weight: 650; }
+    td { padding: 7px; border-top: 1px solid var(--line); vertical-align: middle; }
+    th:nth-child(1) { width: 58px; }
+    th:nth-child(2) { width: 120px; }
+    th:nth-child(3) { width: 145px; }
+    th:nth-child(4) { width: 130px; }
+    th:nth-child(6), th:nth-child(7) { width: 115px; }
+    th:nth-child(8) { width: 128px; }
+    th:nth-child(9) { width: 52px; }
+    .extra-btn { min-height: 36px; width: 100%; padding: 0 10px; font-size: .78rem; }
+    .extra-btn .dot { flex: 0 0 auto; }
+    .extra-list { padding: 14px 16px 4px; display: grid; gap: 9px; }
+    .extra-row { display: grid; grid-template-columns: minmax(120px, .8fr) minmax(160px, 1.4fr) 38px; gap: 8px; align-items: center; }
+    .extra-row .cell-input { background: var(--surface-2); border-color: var(--line); }
+    .extra-empty { margin: 18px 16px; color: var(--muted); font-size: .88rem; }
+    .extra-actions { display: flex; justify-content: space-between; gap: 10px; padding: 12px 16px 16px; border-top: 1px solid var(--line); }
+    .extra-delete { min-height: 38px; width: 38px; padding: 0; }
+    .thumb-wrap { position: relative; width: max-content; }
+    .thumb { width: 44px; height: 52px; object-fit: cover; border-radius: 6px; background: var(--surface-3); display: block; cursor: pointer; }
+    .photo-select {
+      position: absolute; top: 4px; left: 4px; width: 19px; height: 19px; margin: 0;
+      accent-color: var(--accent); cursor: pointer; filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
+    }
+    tr.is-selected td { background: var(--accent-soft); }
+    tr.is-selected .cell-input { background: color-mix(in srgb, var(--surface) 62%, transparent); }
+    .cell-input { width: 100%; min-height: 39px; padding: 8px 9px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: var(--text); }
+    .cell-input:hover { border-color: var(--line); }
+    .cell-input:focus { border-color: var(--accent); background: var(--surface-2); outline: none; }
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; margin-left: 7px; color: var(--muted); font-size: .7rem; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+    .dot.ok { background: var(--accent); }
+    .dot.busy { background: var(--warn); animation: blink 1s ease-in-out infinite; }
+    .dot.fail { background: var(--danger); }
+    @keyframes blink { 50% { opacity: .35; } }
+    .delete { width: 36px; height: 36px; padding: 0; border-radius: 50%; }
+    .empty-row { padding: 40px 20px; text-align: center; color: var(--muted); }
+    dialog { width: min(850px, calc(100% - 28px)); max-height: 90vh; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 24px 70px rgba(0,0,0,.3); }
+    dialog::backdrop { background: rgba(3, 13, 15, .7); }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+    .modal-head strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .modal-close { width: 38px; height: 38px; padding: 0; }
+    .modal-img { display: block; max-width: 100%; max-height: calc(90vh - 68px); margin: auto; object-fit: contain; }
+    @media (max-width: 860px) {
+      .wrap { width: min(100% - 28px, 720px); padding-top: 28px; }
+      .table-scroll { padding: 10px 14px 16px; }
+      table, tbody, tr, td { display: block; width: 100%; }
+      thead { display: none; }
+      tr { padding: 13px 0 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 68px 1fr 1fr; gap: 8px 10px; position: relative; }
+      tbody tr:first-child { border-top: 0; }
+      td { padding: 0; border: 0; min-width: 0; }
+      td::before { content: attr(data-label); display: block; color: var(--muted); font-size: .67rem; font-weight: 650; margin: 0 0 2px 7px; }
+      td.image-cell { grid-row: 1 / span 3; grid-column: 1; }
+      td.image-cell::before { display: none; }
+      td:nth-child(2) { grid-column: 2; }
+      td:nth-child(3) { grid-column: 3; }
+      td:nth-child(4) { grid-column: 2 / -1; }
+      td:nth-child(5) { grid-column: 2 / -1; }
+      td:nth-child(6) { grid-column: 2; }
+      td:nth-child(7) { grid-column: 3; }
+      td:nth-child(8) { grid-column: 2 / -1; }
+      td:nth-child(9) { position: absolute; top: 10px; right: 2px; }
+      .thumb { width: 60px; height: 76px; }
+      .delete { background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+      .cell-input { background: var(--surface-2); border-color: var(--line); }
+    }
+    @media (max-width: 560px) {
+      .wrap { width: calc(100% - 20px); padding-top: 20px; }
+      .upload-panel { padding: 10px; }
+      .dropzone { min-height: 255px; }
+      .drop-content { padding-inline: 12px; }
+      .upload-actions { flex-direction: column; }
+      .upload-actions .btn { width: 100%; }
+      .upload-hint { align-items: flex-start; text-align: left; }
+      .process { grid-template-columns: 1fr; padding: 5px 14px; }
+      .step { justify-content: flex-start; padding: 12px 4px; }
+      .step + .step { border-left: 0; border-top: 1px solid var(--line); }
+      .work-head { align-items: flex-start; flex-direction: column; padding: 15px 14px; }
+      .work-actions { justify-content: flex-start; width: 100%; }
+      .work-actions .btn { flex: 1; padding-inline: 10px; }
+      .notice { margin-inline: 14px; }
+      tr { grid-template-columns: 68px 1fr; }
+      td:nth-child(2), td:nth-child(3), td:nth-child(4), td:nth-child(5), td:nth-child(6), td:nth-child(7), td:nth-child(8) { grid-column: 2; }
+      td.image-cell { grid-row: 1 / span 7; }
+      .extra-row { grid-template-columns: 1fr 38px; }
+      .extra-row [data-extra-key] { grid-column: 1 / -1; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="panel upload-panel" aria-labelledby="upload-title">
+      <div class="dropzone" id="dropzone">
+        <div class="drop-content">
+          <div class="upload-mark" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          </div>
+          <h2 id="upload-title">Subí tus comprobantes</h2>
+          <p>Para comprobantes impresos o escritos a mano.</p>
+          <div class="upload-actions">
+            <button class="btn" id="cameraBtn" type="button">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M14.5 5 13 3h-2L9.5 5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4.5Z"/><circle cx="12" cy="12.5" r="4"/></svg>
+              Sacar foto
+            </button>
+            <button class="btn secondary" id="filesBtn" type="button">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>
+              Elegir imágenes
+            </button>
+          </div>
+          <div class="upload-hint">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>
+            <span>Para letra manuscrita: buena luz, foto de frente y sin sombras.</span>
+          </div>
+          <input id="cameraInput" type="file" accept="image/*" capture="environment" aria-label="Sacar una foto" />
+          <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple aria-label="Elegir imágenes" />
+        </div>
+      </div>
+    </section>
+
+    <section class="process" aria-label="Cómo funciona">
+      <div class="step"><span class="step-number">1</span><div class="step-text"><strong>Subí</strong><span>Una o varias imágenes</span></div></div>
+      <div class="step"><span class="step-number">2</span><div class="step-text"><strong>Lee</strong><span>Busca texto y prueba la letra manuscrita</span></div></div>
+      <div class="step"><span class="step-number">3</span><div class="step-text"><strong>Descargá</strong><span>Todo junto en Excel</span></div></div>
+    </section>
+
+    <section class="panel work" id="workPanel" hidden aria-labelledby="work-title">
+      <div class="work-head">
+        <div class="work-title"><h2 id="work-title">Comprobantes</h2><span class="count" id="count">0 archivos</span></div>
+        <div class="work-actions">
+          <button class="btn ghost" id="addRowBtn" type="button">+ Agregar fila</button>
+          <button class="btn secondary" id="addMoreBtn" type="button">Sumar fotos</button>
+          <button class="btn secondary danger" id="deleteSelectedBtn" type="button" disabled>Eliminar seleccionadas</button>
+          <button class="btn" id="exportBtn" type="button" disabled>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v12m0 0 5-5m-5 5-5-5"/><path d="M5 20h14"/></svg>
+            Descargar Excel
+          </button>
+        </div>
+      </div>
+      <div class="progress-wrap" id="progressWrap" hidden>
+        <div class="progress-line"><span id="progressText">Preparando…</span><span id="progressPercent">0%</span></div>
+        <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
+      </div>
+      <div class="notice warn" id="reviewNotice" hidden>
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01"/><path d="M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+        <span>Revisá los campos: la letra manuscrita o una foto borrosa pueden necesitar correcciones.</span>
+      </div>
+      <div class="notice error" id="errorNotice" hidden></div>
+      <div class="table-scroll">
+        <table aria-label="Datos extraídos de los comprobantes">
+          <thead><tr><th>Imagen</th><th>Fecha</th><th>Nº comprobante</th><th>CUIT</th><th>Proveedor / comercio</th><th>Subtotal</th><th>Total</th><th>Otros datos</th><th></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="previewDialog">
+    <div class="modal-head"><strong id="previewName">Vista previa</strong><button class="btn secondary modal-close" id="closePreview" type="button" aria-label="Cerrar vista previa">×</button></div>
+    <img class="modal-img" id="previewImage" alt="Vista ampliada del comprobante" />
+  </dialog>
+
+  <dialog id="extraDialog">
+    <div class="modal-head"><strong id="extraTitle">Otros datos detectados</strong><button class="btn secondary modal-close" id="closeExtra" type="button" aria-label="Cerrar datos detectados">×</button></div>
+    <div class="extra-list" id="extraList"></div>
+    <p class="extra-empty" id="extraEmpty" hidden>No se detectaron otros campos. Podés agregarlos manualmente.</p>
+    <div class="extra-actions"><button class="btn secondary" id="addExtraBtn" type="button">+ Agregar dato</button><button class="btn" id="doneExtraBtn" type="button">Listo</button></div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var records = [];
+      var selectedIds = new Set();
+      var nextId = 1;
+      var processing = false;
+      var els = {
+        dropzone: document.getElementById('dropzone'), cameraBtn: document.getElementById('cameraBtn'), filesBtn: document.getElementById('filesBtn'),
+        cameraInput: document.getElementById('cameraInput'), fileInput: document.getElementById('fileInput'), workPanel: document.getElementById('workPanel'),
+        count: document.getElementById('count'), rows: document.getElementById('rows'), addMoreBtn: document.getElementById('addMoreBtn'), addRowBtn: document.getElementById('addRowBtn'),
+        deleteSelectedBtn: document.getElementById('deleteSelectedBtn'), exportBtn: document.getElementById('exportBtn'), progressWrap: document.getElementById('progressWrap'), progressText: document.getElementById('progressText'),
+        progressPercent: document.getElementById('progressPercent'), progressBar: document.getElementById('progressBar'), reviewNotice: document.getElementById('reviewNotice'),
+        errorNotice: document.getElementById('errorNotice'), previewDialog: document.getElementById('previewDialog'), previewImage: document.getElementById('previewImage'),
+        previewName: document.getElementById('previewName'), closePreview: document.getElementById('closePreview'), extraDialog: document.getElementById('extraDialog'),
+        extraTitle: document.getElementById('extraTitle'), extraList: document.getElementById('extraList'), extraEmpty: document.getElementById('extraEmpty'),
+        closeExtra: document.getElementById('closeExtra'), addExtraBtn: document.getElementById('addExtraBtn'), doneExtraBtn: document.getElementById('doneExtraBtn')
+      };
+      var activeExtraId = null;
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>'"]/g, function (char) { return ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'})[char]; });
+      }
+      function updateCount() {
+        var n = records.length;
+        var selected = records.filter(function (r) { return selectedIds.has(r.id); }).length;
+        els.count.textContent = n + (n === 1 ? ' archivo' : ' archivos') + (selected ? ' · ' + selected + (selected === 1 ? ' seleccionado' : ' seleccionados') : '');
+        els.workPanel.hidden = n === 0;
+        els.exportBtn.disabled = n === 0 || processing;
+        els.deleteSelectedBtn.disabled = selected === 0;
+        els.deleteSelectedBtn.textContent = selected ? 'Eliminar seleccionadas (' + selected + ')' : 'Eliminar seleccionadas';
+        els.reviewNotice.hidden = n === 0;
+      }
+      function money(value) {
+        if (!value) return '';
+        var clean = String(value).replace(/[^0-9,.]/g, '').trim();
+        return clean;
+      }
+      function inputCell(label, key, record) {
+        return '<td data-label="' + label + '"><input class="cell-input" data-id="' + record.id + '" data-key="' + key + '" value="' + escapeHtml(record[key]) + '" aria-label="' + label + ' de ' + escapeHtml(record.name) + '"></td>';
+      }
+      function render() {
+        els.rows.innerHTML = records.map(function (r) {
+          var status = r.status === 'done' ? '<span class="status-pill"><span class="dot ok"></span>Listo</span>' :
+            r.status === 'processing' ? '<span class="status-pill"><span class="dot busy"></span>Leyendo</span>' :
+            r.status === 'error' ? '<span class="status-pill"><span class="dot fail"></span>Revisar</span>' : '';
+          var image = r.url ? '<div class="thumb-wrap"><img class="thumb" src="' + r.url + '" alt="Miniatura de ' + escapeHtml(r.name) + '" data-preview="' + r.id + '" tabindex="0"><input class="photo-select" type="checkbox" data-select="' + r.id + '" aria-label="Seleccionar ' + escapeHtml(r.name) + '"' + (selectedIds.has(r.id) ? ' checked' : '') + '></div>' :
+            '<div class="thumb" aria-hidden="true"></div>';
+          return '<tr class="' + (selectedIds.has(r.id) ? 'is-selected' : '') + '" data-row="' + r.id + '">' +
+            '<td class="image-cell" data-label="Imagen">' + image + status + '</td>' +
+            inputCell('Fecha', 'fecha', r) + inputCell('Nº comprobante', 'numero', r) + inputCell('CUIT', 'cuit', r) + inputCell('Proveedor / comercio', 'proveedor', r) + inputCell('Subtotal', 'subtotal', r) + inputCell('Total', 'total', r) +
+            '<td data-label="Otros datos"><button class="btn secondary extra-btn" data-extra="' + r.id + '" type="button"><span class="dot ' + ((r.extra || []).length ? 'ok' : '') + '"></span>' + ((r.extra || []).length ? (r.extra.length + (r.extra.length === 1 ? ' dato' : ' datos')) : 'Agregar datos') + '</button></td>' +
+            '<td><button class="btn ghost danger delete" data-delete="' + r.id + '" type="button" aria-label="Eliminar ' + escapeHtml(r.name) + '"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16m-10 4v6m4-6v6M9 7l1-3h4l1 3m-9 0 1 13h10l1-13"/></svg></button></td></tr>';
+        }).join('');
+        updateCount();
+      }
+      function showError(message) {
+        els.errorNotice.textContent = message;
+        els.errorNotice.hidden = !message;
+      }
+      function setProgress(text, pct) {
+        var value = Math.max(0, Math.min(100, Math.round(pct || 0)));
+        els.progressText.textContent = text;
+        els.progressPercent.textContent = value + '%';
+        els.progressBar.style.width = value + '%';
+      }
+      function addManualRow() {
+        records.push({ id: nextId++, name: 'Fila manual', url: '', file: null, fecha: '', numero: '', cuit: '', proveedor: '', subtotal: '', total: '', texto: '', extra: [], status: 'done' });
+        render();
+      }
+      function validImage(file) { return file && /^image\/(jpeg|png|webp)$/i.test(file.type); }
+      async function handleFiles(fileList) {
+        var files = Array.prototype.slice.call(fileList || []).filter(validImage);
+        if (!files.length) { showError('Elegí imágenes JPG, PNG o WEBP.'); return; }
+        showError('');
+        var added = files.map(function (file) {
+          var rec = { id: nextId++, name: file.name, url: URL.createObjectURL(file), file: file, fecha: '', numero: '', cuit: '', proveedor: '', subtotal: '', total: '', texto: '', extra: [], status: 'queued' };
+          records.push(rec); return rec;
+        });
+        render();
+        await processRecords(added);
+        els.cameraInput.value = ''; els.fileInput.value = '';
+      }
+      function normalizeText(text) { return String(text || '').replace(/\r/g, '\n').replace(/\n{2,}/g, '\n'); }
+      function pick(text, patterns) {
+        for (var i = 0; i < patterns.length; i++) { var match = text.match(patterns[i]); if (match && match[1]) return match[1].trim(); }
+        return '';
+      }
+      function parseReceipt(text) {
+        var t = normalizeText(text);
+        var lines = t.split('\n').map(function (x) { return x.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+        var flat = lines.join(' | ');
+        function digits(value) {
+          return String(value || '').replace(/[Oo]/g, '0').replace(/[Il|]/g, '1').replace(/\D/g, '');
+        }
+        function dateIn(value) {
+          var m = String(value || '').match(/\b(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})\b/);
+          return m ? m[1] : '';
+        }
+        function cuitIn(value) {
+          var source = String(value || '').replace(/[Oo]/g, '0').replace(/[Il|]/g, '1');
+          var m = source.match(/\b(\d{2})\s*[-.]?\s*(\d{7,8})\s*[-.]?\s*(\d)\b/);
+          if (!m) return '';
+          var middle = m[2].padStart(8, '0');
+          return m[1] + '-' + middle + '-' + m[3];
+        }
+        function moneyIn(value) {
+          var found = String(value || '').match(/(?:\$|ARS|USD)?\s*(\d{1,3}(?:[.\s]\d{3})*(?:,\d{2})|\d+(?:[.,]\d{2}))/gi) || [];
+          if (!found.length) return '';
+          return money(found[found.length - 1]);
+        }
+        function valueNear(label, extractor, lookAhead) {
+          for (var n = 0; n < lines.length; n++) {
+            if (!label.test(lines[n])) continue;
+            label.lastIndex = 0;
+            var same = lines[n].replace(label, '').replace(/^[\s:;=.-]+/, '');
+            var candidates = [same];
+            for (var step = 1; step <= (lookAhead || 2) && n + step < lines.length; step++) candidates.push(lines[n + step]);
+            for (var c = 0; c < candidates.length; c++) {
+              var result = extractor(candidates[c]);
+              if (result) return result;
+            }
+          }
+          return '';
+        }
+        var fecha = valueNear(/(?:fecha(?:\s+de\s+emisi[oó]n)?|date)\b/i, dateIn, 3) || dateIn(t);
+        var cuit = valueNear(/(?:cuit|cuil)\b/i, cuitIn, 3) || cuitIn(t);
+        var numero = '';
+        var combinedNumber = flat.match(/(?:punto\s+de\s+venta|pto\.?\s*vta\.?)\s*[:.-]?\s*(\d{1,5}).{0,60}?(?:comp(?:robante)?\.?\s*(?:nro|n[°ºo]|numero|número)|nro\.?\s+comp(?:robante)?)\s*[:.-]?\s*(\d{4,10})/i);
+        if (combinedNumber) numero = combinedNumber[1].padStart(5, '0') + '-' + combinedNumber[2].padStart(8, '0');
+        if (!numero) numero = pick(flat, [/(?:comp(?:robante)?\.?\s*(?:nro|n[°ºo]|numero|número)|factura|ticket|recibo)\s*[:.-]?\s*([A-Z]?\s*\d{3,5}\s*[- ]\s*\d{5,10})/i, /\b(\d{4,5}-\d{6,10})\b/]);
+        if (!numero) {
+          var compLine = valueNear(/(?:comp(?:robante)?\.?\s*(?:nro|n[°ºo]|numero|número)|n(?:ro|°|º)\.?\s*(?:de\s+)?comprobante)\b/i, function (value) {
+            var m = String(value).match(/\b(\d{1,10})\b/); return m ? m[1] : '';
+          }, 3);
+          var salePoint = valueNear(/(?:punto\s+de\s+venta|pto\.?\s*vta\.?)\b/i, function (value) {
+            var m = String(value).match(/\b(\d{1,5})\b/); return m ? m[1] : '';
+          }, 2);
+          if (compLine) numero = salePoint ? salePoint.padStart(5, '0') + '-' + compLine.padStart(8, '0') : compLine;
+        }
+        numero = numero.replace(/\s+/g, '');
+        var total = valueNear(/(?:importe\s+total|total\s+(?:a\s+pagar|final)|\btotal\b)(?!.*sub)/i, moneyIn, 3);
+        var subtotal = valueNear(/(?:subtotal|neto\s+gravado|importe\s+neto)\b/i, moneyIn, 3);
+        var proveedor = '';
+        for (var rs = 0; rs < lines.length; rs++) {
+          if (/datos\s+(?:del\s+)?(?:cliente|receptor)|apellido\s+y\s+nombre/i.test(lines[rs])) break;
+          if (!/(?:raz[oó]n\s+social|proveedor|comercio|emisor)\b/i.test(lines[rs])) continue;
+          var explicit = lines[rs].replace(/^.*?(?:raz[oó]n\s+social|proveedor|comercio|emisor)\s*[:.-]?\s*/i, '').trim();
+          if (!explicit || /^(?:raz[oó]n\s+social|proveedor|comercio|emisor)$/i.test(explicit)) explicit = lines[rs + 1] || '';
+          explicit = explicit.replace(/\s+(?:domicilio|cuit|ingresos\s+brutos|condici[oó]n\s+(?:frente\s+al\s+)?iva)\b.*$/i, '').replace(/\s{2,}.*$/, '').trim();
+          if (/[A-Za-zÁÉÍÓÚÑáéíóúñ]/.test(explicit) && explicit.length >= 2 && explicit.length <= 90) { proveedor = explicit; break; }
+        }
+        var ignored = /factura|ticket|recibo|comprobante|fecha|cuit|original|duplicado|consumidor|responsable|iva|inicio de actividades|ingresos brutos|datos del cliente|datos cliente|datos del receptor|raz[oó]n social|punto de venta|c[oó]d(?:igo)?/i;
+        if (!proveedor) {
+          for (var i = 0; i < Math.min(lines.length, 12); i++) {
+            var line = lines[i].replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ0-9 &.'-]/g, ' ').replace(/\s+/g, ' ').trim();
+            if (line.length >= 3 && line.length <= 70 && /[A-Za-zÁÉÍÓÚÑáéíóúñ]/.test(line) && !ignored.test(line)) { proveedor = line; break; }
+          }
+        }
+        var extra = [];
+        function extraKey(label) { return String(label || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+        function addExtra(label, value) {
+          label = String(label || '').replace(/\s+/g, ' ').replace(/^[-.: ]+|[-.: ]+$/g, '').trim();
+          value = String(value || '').replace(/\s+/g, ' ').trim();
+          var key = extraKey(label);
+          if (!label || !value || label.length > 42 || value.length > 100 || /^(fecha|fecha de emision|date|cuit|cuil|total|total a pagar|importe total|subtotal|neto gravado|importe neto|proveedor|comercio|numero|nro|n)$/.test(key)) return;
+          if (!extra.some(function (item) { return extraKey(item.label) === key; })) extra.push({ label: label, value: value });
+        }
+        var known = [
+          ['Tipo de comprobante', /\b((?:factura|recibo|nota\s+de\s+(?:cr[eé]dito|d[eé]bito)|ticket)\s*[ABCME]?)\b/i],
+          ['Punto de venta', /(?:punto\s+de\s+venta|pto\.?\s*vta\.?)\s*[:.-]?\s*(\d{1,5})/i],
+          ['CAE', /\bCAE\s*(?:N(?:ro|°|º))?\s*[:.-]?\s*(\d{8,20})/i],
+          ['Vencimiento CAE', /(?:vto\.?|vencimiento)\s*(?:del\s*)?CAE\s*[:.-]?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i],
+          ['Forma de pago', /(?:forma\s+de\s+pago|medio\s+de\s+pago|condici[oó]n\s+de\s+venta)\s*[:.-]?\s*([^\n]{2,60})/i],
+          ['Moneda', /(?:moneda|currency)\s*[:.-]?\s*([^\n]{1,30})/i],
+          ['IVA', /(?:iva(?:\s+\d{1,2}(?:[.,]\d+)?\s*%)?)\s*[:$ ]+([\d.,]+)/i],
+          ['Condición frente al IVA', /(?:condici[oó]n\s+(?:frente\s+al\s+)?iva)\s*[:.-]?\s*([^\n]{2,60})/i],
+          ['Domicilio', /(?:domicilio(?:\s+comercial)?|direcci[oó]n)\s*[:.-]?\s*([^\n]{4,100})/i],
+          ['Ingresos brutos', /(?:ingresos\s+brutos|iibb)\s*[:.-]?\s*([\w.-]{3,30})/i]
+        ];
+        known.forEach(function (item) { var m = t.match(item[1]); if (m && m[1]) addExtra(item[0], m[1]); });
+        lines.forEach(function (line, index) {
+          if (extra.length >= 18) return;
+          var m = line.match(/^([A-Za-zÁÉÍÓÚÑáéíóúñ][A-Za-zÁÉÍÓÚÑáéíóúñ0-9 %().\/-]{1,38})\s*[:=]\s*(.{1,100})$/);
+          if (!m) m = line.match(/^([A-Za-zÁÉÍÓÚÑáéíóúñ][A-Za-zÁÉÍÓÚÑáéíóúñ0-9 %().\/-]{2,34}?)\s{2,}(.{1,100})$/);
+          if (m) { addExtra(m[1], m[2]); return; }
+          var label = line.replace(/[:=]\s*$/, '').trim();
+          var next = lines[index + 1] || '';
+          var labelWords = label.split(/\s+/).length;
+          var isShortLabel = label.length >= 3 && label.length <= 32 && labelWords <= 5 && /^[A-Za-zÁÉÍÓÚÑáéíóúñ][A-Za-zÁÉÍÓÚÑáéíóúñ0-9 %().\/-]*$/.test(label);
+          var nextLooksLikeValue = next.length <= 100 && (/^\s*[$€£]?\s*\d/.test(next) || /^(efectivo|d[eé]bito|cr[eé]dito|transferencia|pesos|d[oó]lares|ars|usd)$/i.test(next));
+          if (isShortLabel && (/:\s*$/.test(line) || nextLooksLikeValue)) addExtra(label, next);
+        });
+        return { fecha: fecha, numero: numero.replace(/\s+/g, ''), cuit: cuit.replace(/\s/g, ''), proveedor: proveedor, subtotal: money(subtotal), total: money(total), extra: extra, texto: t };
+      }
+      async function preprocess(file, mode) {
+        var bitmap;
+        try { bitmap = await createImageBitmap(file); } catch (e) { return file; }
+        var longest = Math.max(bitmap.width, bitmap.height);
+        var scale = longest > 2600 ? 2600 / longest : Math.min(2, Math.max(1, 1800 / longest));
+        var canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(bitmap.width * scale)); canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+        var ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        var image = ctx.getImageData(0, 0, canvas.width, canvas.height), d = image.data;
+        var histogram = new Uint32Array(256), grayValues = new Uint8Array(d.length / 4);
+        for (var i = 0, p = 0; i < d.length; i += 4, p++) {
+          var gray = Math.round(.299 * d[i] + .587 * d[i + 1] + .114 * d[i + 2]);
+          grayValues[p] = gray; histogram[gray]++;
+        }
+        var total = grayValues.length, lowTarget = total * .03, highTarget = total * .97, cumulative = 0, low = 0, high = 255;
+        for (var h = 0; h < 256; h++) { cumulative += histogram[h]; if (cumulative >= lowTarget) { low = h; break; } }
+        cumulative = 0;
+        for (var h2 = 0; h2 < 256; h2++) { cumulative += histogram[h2]; if (cumulative >= highTarget) { high = h2; break; } }
+        if (high - low < 70) { low = Math.max(0, low - 35); high = Math.min(255, high + 35); }
+        var threshold = 176;
+        if (mode === 'ink') {
+          var sum = 0, weight = 0, background = 0, foreground = 0, maxVariance = 0;
+          for (var t = 0; t < 256; t++) sum += t * histogram[t];
+          for (var t2 = 0; t2 < 256; t2++) {
+            weight += histogram[t2]; if (!weight) continue;
+            var remaining = total - weight; if (!remaining) break;
+            background += t2 * histogram[t2];
+            var meanA = background / weight, meanB = (sum - background) / remaining;
+            var variance = weight * remaining * (meanA - meanB) * (meanA - meanB);
+            if (variance > maxVariance) { maxVariance = variance; threshold = t2; }
+          }
+          threshold = Math.min(215, Math.max(120, threshold + 10));
+        }
+        for (var j = 0; j < d.length; j += 4) {
+          var value = grayValues[j / 4];
+          var adjusted = mode === 'ink' ? (value < threshold ? 0 : 255) : Math.max(0, Math.min(255, ((value - low) * 245 / Math.max(1, high - low)) + 5));
+          d[j] = d[j + 1] = d[j + 2] = adjusted;
+        }
+        ctx.putImageData(image, 0, 0);
+        if (bitmap.close) bitmap.close();
+        return await new Promise(function (resolve) { canvas.toBlob(function (blob) { resolve(blob || file); }, 'image/jpeg', mode === 'ink' ? .96 : .93); });
+      }
+      function ocrScore(result) {
+        var text = normalizeText(result && result.data ? result.data.text : '');
+        var useful = text.replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ0-9]/g, '').length;
+        var confidence = Number(result && result.data ? result.data.confidence : 0) || 0;
+        var signals = (text.match(/fecha|total|factura|recibo|cuit|importe|nro|número|numero/gi) || []).length;
+        return confidence + Math.min(22, useful / 10) + Math.min(16, signals * 3);
+      }
+      function receiptDataScore(parsed) {
+        if (!parsed) return 0;
+        return (parsed.fecha ? 3 : 0) + (parsed.numero ? 4 : 0) + (parsed.cuit ? 4 : 0) +
+          (parsed.proveedor ? 2 : 0) + (parsed.subtotal ? 2 : 0) + (parsed.total ? 5 : 0) + Math.min(3, (parsed.extra || []).length);
+      }
+      async function processRecords(list) {
+        if (processing) return;
+        if (!window.Tesseract) {
+          list.forEach(function (r) { r.status = 'error'; }); render();
+          showError('No se pudo cargar el lector de imágenes. Revisá tu conexión e intentá de nuevo. También podés completar las filas a mano.'); return;
+        }
+        processing = true; els.exportBtn.disabled = true; els.progressWrap.hidden = false;
+        for (var i = 0; i < list.length; i++) {
+          var rec = list[i]; rec.status = 'processing'; render();
+          try {
+            var image = await preprocess(rec.file, 'soft');
+            var logger = (function (index, name) {
+              return function (m) {
+                if (m.status === 'recognizing text') {
+                  var overall = ((index + (m.progress || 0) * .7) / list.length) * 100;
+                  setProgress('Leyendo letra y datos de ' + name, overall);
+                }
+              };
+            })(i, rec.name);
+            var result = await window.Tesseract.recognize(image, 'spa+eng', { logger: logger, preserve_interword_spaces: '1' });
+            var firstText = normalizeText(result.data.text), firstConfidence = Number(result.data.confidence || 0);
+            var parsed = parseReceipt(firstText);
+            if (firstConfidence < 72 || firstText.replace(/\s/g, '').length < 80 || receiptDataScore(parsed) < 9) {
+              setProgress('Probando otra lectura en ' + rec.name, ((i + .72) / list.length) * 100);
+              var inkImage = await preprocess(rec.file, 'ink');
+              var inkResult = await window.Tesseract.recognize(inkImage, 'spa+eng', { logger: (function (index, name) {
+                return function (m) {
+                  if (m.status === 'recognizing text') setProgress('Afinando datos de ' + name, ((index + .72 + (m.progress || 0) * .28) / list.length) * 100);
+                };
+              })(i, rec.name), preserve_interword_spaces: '1' });
+              var inkParsed = parseReceipt(inkResult.data.text);
+              var currentQuality = receiptDataScore(parsed) * 8 + ocrScore(result);
+              var inkQuality = receiptDataScore(inkParsed) * 8 + ocrScore(inkResult);
+              if (inkQuality > currentQuality) { result = inkResult; parsed = inkParsed; }
+            }
+            Object.assign(rec, parsed); rec.status = receiptDataScore(parsed) ? 'done' : 'error';
+          } catch (err) {
+            rec.status = 'error';
+          }
+          render();
+        }
+        processing = false; setProgress('Lectura terminada', 100); els.exportBtn.disabled = records.length === 0;
+        window.setTimeout(function () { if (!processing) els.progressWrap.hidden = true; }, 1300);
+      }
+      function deleteSelected() {
+        if (!selectedIds.size) return;
+        records.forEach(function (r) { if (selectedIds.has(r.id) && r.url) URL.revokeObjectURL(r.url); });
+        records = records.filter(function (r) { return !selectedIds.has(r.id); });
+        selectedIds.clear();
+        render();
+      }
+      function exportExcel() {
+        if (!records.length) return;
+        if (!window.XLSX) { showError('No se pudo cargar el generador de Excel. Revisá tu conexión e intentá nuevamente.'); return; }
+        var extraColumns = [];
+        records.forEach(function (r) { (r.extra || []).forEach(function (item) { if (item.label && !extraColumns.includes(item.label)) extraColumns.push(item.label); }); });
+        var data = records.map(function (r) {
+          var row = {
+            'Archivo': r.name, 'Fecha': r.fecha, 'Nº comprobante': r.numero, 'CUIT': r.cuit,
+            'Proveedor / comercio': r.proveedor, 'Subtotal': r.subtotal, 'Total': r.total
+          };
+          extraColumns.forEach(function (label) { var item = (r.extra || []).find(function (x) { return x.label === label; }); row[label] = item ? item.value : ''; });
+          row['Texto leído'] = r.texto;
+          return row;
+        });
+        var ws = XLSX.utils.json_to_sheet(data);
+        ws['!cols'] = [{wch:24},{wch:12},{wch:18},{wch:16},{wch:30},{wch:14},{wch:14}].concat(extraColumns.map(function () { return {wch:22}; }), [{wch:70}]);
+        var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Comprobantes');
+        var stamp = new Date().toISOString().slice(0, 10);
+        XLSX.writeFile(wb, 'comprobantes-' + stamp + '.xlsx');
+      }
+      function renderExtraFields() {
+        var rec = records.find(function (x) { return x.id === activeExtraId; });
+        if (!rec) return;
+        rec.extra = rec.extra || [];
+        els.extraList.innerHTML = rec.extra.map(function (item, index) {
+          return '<div class="extra-row" data-extra-row="' + index + '">' +
+            '<input class="cell-input" data-extra-key="label" data-extra-index="' + index + '" value="' + escapeHtml(item.label) + '" aria-label="Nombre del dato">' +
+            '<input class="cell-input" data-extra-key="value" data-extra-index="' + index + '" value="' + escapeHtml(item.value) + '" aria-label="Valor del dato">' +
+            '<button class="btn ghost danger extra-delete" data-extra-delete="' + index + '" type="button" aria-label="Eliminar dato">×</button></div>';
+        }).join('');
+        els.extraEmpty.hidden = rec.extra.length !== 0;
+      }
+      function openExtra(id) {
+        var rec = records.find(function (x) { return x.id === id; });
+        if (!rec) return;
+        activeExtraId = id;
+        els.extraTitle.textContent = 'Otros datos · ' + rec.name;
+        renderExtraFields();
+        els.extraDialog.showModal();
+      }
+      function closeExtraDialog() { els.extraDialog.close(); activeExtraId = null; render(); }
+      els.cameraBtn.addEventListener('click', function () { els.cameraInput.click(); });
+      els.filesBtn.addEventListener('click', function () { els.fileInput.click(); });
+      els.addMoreBtn.addEventListener('click', function () { els.fileInput.click(); });
+      els.addRowBtn.addEventListener('click', addManualRow);
+      els.deleteSelectedBtn.addEventListener('click', deleteSelected);
+      els.exportBtn.addEventListener('click', exportExcel);
+      els.cameraInput.addEventListener('change', function (e) { handleFiles(e.target.files); });
+      els.fileInput.addEventListener('change', function (e) { handleFiles(e.target.files); });
+      ['dragenter','dragover'].forEach(function (name) { els.dropzone.addEventListener(name, function (e) { e.preventDefault(); els.dropzone.classList.add('drag'); }); });
+      ['dragleave','drop'].forEach(function (name) { els.dropzone.addEventListener(name, function (e) { e.preventDefault(); els.dropzone.classList.remove('drag'); }); });
+      els.dropzone.addEventListener('drop', function (e) { handleFiles(e.dataTransfer.files); });
+      els.rows.addEventListener('change', function (e) {
+        var select = e.target.closest('[data-select]'); if (!select) return;
+        var id = Number(select.dataset.select);
+        if (select.checked) selectedIds.add(id); else selectedIds.delete(id);
+        render();
+      });
+      els.rows.addEventListener('input', function (e) {
+        var input = e.target.closest('.cell-input'); if (!input) return;
+        var rec = records.find(function (x) { return x.id === Number(input.dataset.id); }); if (rec) rec[input.dataset.key] = input.value;
+      });
+      els.rows.addEventListener('click', function (e) {
+        var del = e.target.closest('[data-delete]');
+        if (del) { var id = Number(del.dataset.delete), rec = records.find(function (x) { return x.id === id; }); if (rec && rec.url) URL.revokeObjectURL(rec.url); selectedIds.delete(id); records = records.filter(function (x) { return x.id !== id; }); render(); return; }
+        var extra = e.target.closest('[data-extra]'); if (extra) { openExtra(Number(extra.dataset.extra)); return; }
+        var img = e.target.closest('[data-preview]'); if (img) openPreview(Number(img.dataset.preview));
+      });
+      els.rows.addEventListener('keydown', function (e) { var img = e.target.closest('[data-preview]'); if (img && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openPreview(Number(img.dataset.preview)); } });
+      function openPreview(id) { var rec = records.find(function (x) { return x.id === id; }); if (!rec || !rec.url) return; els.previewImage.src = rec.url; els.previewName.textContent = rec.name; els.previewDialog.showModal(); }
+      els.closePreview.addEventListener('click', function () { els.previewDialog.close(); });
+      els.previewDialog.addEventListener('click', function (e) { if (e.target === els.previewDialog) els.previewDialog.close(); });
+      els.addExtraBtn.addEventListener('click', function () {
+        var rec = records.find(function (x) { return x.id === activeExtraId; });
+        if (!rec) return;
+        rec.extra = rec.extra || []; rec.extra.push({ label: '', value: '' }); renderExtraFields();
+        var inputs = els.extraList.querySelectorAll('[data-extra-key="label"]'); if (inputs.length) inputs[inputs.length - 1].focus();
+      });
+      els.extraList.addEventListener('input', function (e) {
+        var input = e.target.closest('[data-extra-key]'); if (!input) return;
+        var rec = records.find(function (x) { return x.id === activeExtraId; });
+        var index = Number(input.dataset.extraIndex); if (rec && rec.extra && rec.extra[index]) rec.extra[index][input.dataset.extraKey] = input.value;
+      });
+      els.extraList.addEventListener('click', function (e) {
+        var button = e.target.closest('[data-extra-delete]'); if (!button) return;
+        var rec = records.find(function (x) { return x.id === activeExtraId; });
+        if (rec && rec.extra) { rec.extra.splice(Number(button.dataset.extraDelete), 1); renderExtraFields(); }
+      });
+      els.closeExtra.addEventListener('click', closeExtraDialog);
+      els.doneExtraBtn.addEventListener('click', closeExtraDialog);
+      els.extraDialog.addEventListener('click', function (e) { if (e.target === els.extraDialog) closeExtraDialog(); });
+      els.extraDialog.addEventListener('cancel', function () { activeExtraId = null; render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>
