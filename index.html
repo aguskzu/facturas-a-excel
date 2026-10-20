@@ -65,31 +65,47 @@
       outline-offset: 2px;
     }
     .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 42px 0 64px; }
+    .hero { text-align: center; padding: 14px 0 30px; }
+    .hero h1 { margin: 0 0 10px; font-size: clamp(1.85rem, 4.6vw, 2.55rem); letter-spacing: -.03em; line-height: 1.12; }
+    .hero p { margin: 0 auto; max-width: 580px; color: var(--muted); font-size: 1.02rem; }
+    .section-title { margin: 0 0 16px; font-size: 1.25rem; letter-spacing: -.02em; text-align: center; }
     .panel { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 18px; overflow: hidden; }
     .upload-panel { padding: 20px; }
     .dropzone {
-      position: relative; min-height: 220px; display: grid; place-items: center; text-align: center;
+      position: relative; min-height: 330px; display: grid; place-items: center; text-align: center;
       border: 2px dashed var(--line); border-radius: 12px; background: var(--surface-2);
       transition: border-color .15s ease, background .15s ease;
     }
     .dropzone.drag { border-color: var(--accent); background: var(--accent-soft); }
-    .drop-content { padding: 34px 20px; max-width: 620px; }
-    .upload-mark { width: 50px; height: 50px; margin: 0 auto 14px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
-    .dropzone h2 { margin: 0 0 6px; font-size: 1.28rem; letter-spacing: -.02em; }
+    .drop-content { padding: 54px 20px; max-width: 620px; }
+    .upload-mark { width: 58px; height: 58px; margin: 0 auto 16px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+    .dropzone h2 { margin: 0 0 6px; font-size: 1.45rem; letter-spacing: -.02em; }
     .dropzone p { margin: 0; color: var(--muted); font-size: .93rem; }
     .upload-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
     .upload-hint { margin-top: 16px; display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: .8rem; }
     .upload-hint .icon { width: 15px; height: 15px; color: var(--accent); }
-    .process {
-      margin-top: 14px; padding: 15px 18px; display: grid; grid-template-columns: repeat(3, 1fr);
-      background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
-    }
-    .step { min-width: 0; display: flex; align-items: center; justify-content: center; gap: 11px; padding: 2px 18px; }
-    .step + .step { border-left: 1px solid var(--line); }
-    .step-number { width: 27px; height: 27px; flex: 0 0 27px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font: 500 .78rem "DM Mono", monospace; }
+    .gemini { margin-top: 22px; padding: 20px; }
+    .gemini-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .gemini-head strong { font-size: .95rem; }
+    .gemini-state { display: block; margin: 10px 0 0; color: var(--muted); font-size: .82rem; }
+    .gemini-state.on { color: var(--accent); font-weight: 650; }
+    .gemini-state.error { color: var(--danger); font-weight: 650; }
+    .gemini-note a { color: var(--accent); font-weight: 600; }
+    .gemini-row { display: flex; gap: 9px; margin-top: 11px; flex-wrap: wrap; }
+    .gemini-row input { flex: 1 1 260px; min-height: 44px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); }
+    .gemini-note { margin: 10px 0 0; color: var(--muted); font-size: .78rem; }
+    .howto { margin-top: 46px; }
+    .process { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .step { min-width: 0; display: flex; align-items: flex-start; gap: 13px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+    .step-number { width: 30px; height: 30px; flex: 0 0 30px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font: 500 .82rem "DM Mono", monospace; }
     .step-text { min-width: 0; }
-    .step strong { display: block; font-size: .87rem; line-height: 1.2; }
-    .step span:last-child { display: block; margin-top: 2px; color: var(--muted); font-size: .74rem; line-height: 1.25; }
+    .step-text strong { display: block; font-size: .95rem; line-height: 1.25; }
+    .step-text span { display: block; margin-top: 3px; color: var(--muted); font-size: .82rem; line-height: 1.35; }
+    .features { margin-top: 26px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .feature { min-width: 0; display: flex; align-items: flex-start; gap: 13px; padding: 6px 4px; }
+    .feature-icon { width: 38px; height: 38px; flex: 0 0 38px; display: grid; place-items: center; border-radius: 11px; background: var(--accent-soft); color: var(--accent); }
+    .feature strong { display: block; font-size: .95rem; line-height: 1.25; }
+    .feature p { margin: 3px 0 0; color: var(--muted); font-size: .84rem; line-height: 1.4; }
     .btn {
       min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       border: 0; border-radius: 9px; padding: 0 16px; cursor: pointer; font-weight: 650;
@@ -97,6 +113,7 @@
     }
     .btn:hover { background: var(--accent-strong); }
     .btn:active { transform: translateY(1px); }
+    .btn.large { min-height: 54px; padding: 0 26px; font-size: 1rem; border-radius: 11px; }
     .btn.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
     .btn.secondary:hover { background: var(--surface-3); }
     .btn.ghost { background: transparent; color: var(--accent); padding-inline: 10px; }
@@ -107,7 +124,7 @@
     .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
     .icon { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     input[type="file"] { display: none; }
-    .work { margin-top: 20px; }
+    .work { margin-top: 26px; }
     .work[hidden] { display: none; }
     .work-head { padding: 17px 20px; display: flex; gap: 16px; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); }
     .work-title { display: flex; align-items: baseline; gap: 9px; }
@@ -127,7 +144,7 @@
     table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     th { padding: 8px 7px; color: var(--muted); text-align: left; font-size: .72rem; font-weight: 650; }
     td { padding: 7px; border-top: 1px solid var(--line); vertical-align: middle; }
-    th:nth-child(1) { width: 58px; }
+    th:nth-child(1) { width: 80px; }
     th:nth-child(2) { width: 120px; }
     th:nth-child(3) { width: 145px; }
     th:nth-child(4) { width: 130px; }
@@ -142,11 +159,11 @@
     .extra-empty { margin: 18px 16px; color: var(--muted); font-size: .88rem; }
     .extra-actions { display: flex; justify-content: space-between; gap: 10px; padding: 12px 16px 16px; border-top: 1px solid var(--line); }
     .extra-delete { min-height: 38px; width: 38px; padding: 0; }
-    .thumb-wrap { position: relative; width: max-content; }
+    .thumb-wrap { display: flex; align-items: center; gap: 7px; width: max-content; }
     .thumb { width: 44px; height: 52px; object-fit: cover; border-radius: 6px; background: var(--surface-3); display: block; cursor: pointer; }
     .photo-select {
-      position: absolute; top: 4px; left: 4px; width: 19px; height: 19px; margin: 0;
-      accent-color: var(--accent); cursor: pointer; filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
+      flex: 0 0 auto; width: 19px; height: 19px; margin: 0;
+      accent-color: var(--accent); cursor: pointer;
     }
     tr.is-selected td { background: var(--accent-soft); }
     tr.is-selected .cell-input { background: color-mix(in srgb, var(--surface) 62%, transparent); }
@@ -172,7 +189,7 @@
       .table-scroll { padding: 10px 14px 16px; }
       table, tbody, tr, td { display: block; width: 100%; }
       thead { display: none; }
-      tr { padding: 13px 0 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 68px 1fr 1fr; gap: 8px 10px; position: relative; }
+      tr { padding: 13px 0 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 92px 1fr 1fr; gap: 8px 10px; position: relative; }
       tbody tr:first-child { border-top: 0; }
       td { padding: 0; border: 0; min-width: 0; }
       td::before { content: attr(data-label); display: block; color: var(--muted); font-size: .67rem; font-weight: 650; margin: 0 0 2px 7px; }
@@ -193,19 +210,17 @@
     @media (max-width: 560px) {
       .wrap { width: calc(100% - 20px); padding-top: 20px; }
       .upload-panel { padding: 10px; }
-      .dropzone { min-height: 255px; }
+      .dropzone { min-height: 300px; }
       .drop-content { padding-inline: 12px; }
       .upload-actions { flex-direction: column; }
       .upload-actions .btn { width: 100%; }
       .upload-hint { align-items: flex-start; text-align: left; }
-      .process { grid-template-columns: 1fr; padding: 5px 14px; }
-      .step { justify-content: flex-start; padding: 12px 4px; }
-      .step + .step { border-left: 0; border-top: 1px solid var(--line); }
+      .process, .features { grid-template-columns: 1fr; }
       .work-head { align-items: flex-start; flex-direction: column; padding: 15px 14px; }
       .work-actions { justify-content: flex-start; width: 100%; }
       .work-actions .btn { flex: 1; padding-inline: 10px; }
       .notice { margin-inline: 14px; }
-      tr { grid-template-columns: 68px 1fr; }
+      tr { grid-template-columns: 92px 1fr; }
       td:nth-child(2), td:nth-child(3), td:nth-child(4), td:nth-child(5), td:nth-child(6), td:nth-child(7), td:nth-child(8) { grid-column: 2; }
       td.image-cell { grid-row: 1 / span 7; }
       .extra-row { grid-template-columns: 1fr 38px; }
@@ -216,6 +231,10 @@
 </head>
 <body>
   <main class="wrap">
+    <header class="hero">
+      <h1>Pasá tus facturas a Excel</h1>
+      <p>Subí fotos de tus comprobantes y descargá los datos ya ordenados en una planilla.</p>
+    </header>
     <section class="panel upload-panel" aria-labelledby="upload-title">
       <div class="dropzone" id="dropzone">
         <div class="drop-content">
@@ -225,11 +244,11 @@
           <h2 id="upload-title">Subí tus comprobantes</h2>
           <p>Para comprobantes impresos o escritos a mano.</p>
           <div class="upload-actions">
-            <button class="btn" id="cameraBtn" type="button">
+            <button class="btn large" id="cameraBtn" type="button">
               <svg class="icon" viewBox="0 0 24 24"><path d="M14.5 5 13 3h-2L9.5 5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4.5Z"/><circle cx="12" cy="12.5" r="4"/></svg>
               Sacar foto
             </button>
-            <button class="btn secondary" id="filesBtn" type="button">
+            <button class="btn secondary large" id="filesBtn" type="button">
               <svg class="icon" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>
               Elegir imágenes
             </button>
@@ -244,10 +263,23 @@
       </div>
     </section>
 
-    <section class="process" aria-label="Cómo funciona">
-      <div class="step"><span class="step-number">1</span><div class="step-text"><strong>Subí</strong><span>Una o varias imágenes</span></div></div>
-      <div class="step"><span class="step-number">2</span><div class="step-text"><strong>Lee</strong><span>Busca texto y prueba la letra manuscrita</span></div></div>
-      <div class="step"><span class="step-number">3</span><div class="step-text"><strong>Descargá</strong><span>Todo junto en Excel</span></div></div>
+    <section class="panel gemini" aria-label="Lectura con Gemini">
+      <div class="gemini-head"><strong>Lectura con Gemini</strong></div>
+      <div class="gemini-row">
+        <input id="geminiKey" type="password" placeholder="Pegá tu clave de API de Google AI Studio" autocomplete="off" aria-label="Clave de API de Gemini" />
+        <button class="btn" id="geminiApply" type="button">Usar clave</button>
+      </div>
+      <span class="gemini-state" id="geminiState">Opcional: lee mejor la letra manuscrita</span>
+      <p class="gemini-note">Sin clave se usa el lector del navegador. La clave queda solo en esta pestaña, no se guarda. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Conseguir clave gratis</a></p>
+    </section>
+
+    <section class="howto" aria-labelledby="howto-title">
+      <h2 class="section-title" id="howto-title">Cómo funciona</h2>
+      <div class="process">
+        <div class="step"><span class="step-number">1</span><div class="step-text"><strong>Subí</strong><span>Una o varias imágenes de tus comprobantes.</span></div></div>
+        <div class="step"><span class="step-number">2</span><div class="step-text"><strong>Convertí</strong><span>Tocá «Convertir a tabla» y cada foto pasa a ser una fila con sus datos.</span></div></div>
+        <div class="step"><span class="step-number">3</span><div class="step-text"><strong>Descargá</strong><span>Revisá los datos y bajá todo junto en un Excel.</span></div></div>
+      </div>
     </section>
 
     <section class="panel work" id="workPanel" hidden aria-labelledby="work-title">
@@ -257,6 +289,10 @@
           <button class="btn ghost" id="addRowBtn" type="button">+ Agregar fila</button>
           <button class="btn secondary" id="addMoreBtn" type="button">Sumar fotos</button>
           <button class="btn secondary danger" id="deleteSelectedBtn" type="button" disabled>Eliminar seleccionadas</button>
+          <button class="btn" id="convertBtn" type="button" hidden>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16M9 5v14M16 5v14"/></svg>
+            <span id="convertLabel">Convertir a tabla</span>
+          </button>
           <button class="btn" id="exportBtn" type="button" disabled>
             <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v12m0 0 5-5m-5 5-5-5"/><path d="M5 20h14"/></svg>
             Descargar Excel
@@ -277,6 +313,21 @@
           <thead><tr><th>Imagen</th><th>Fecha</th><th>Nº comprobante</th><th>CUIT</th><th>Proveedor / comercio</th><th>Subtotal</th><th>Total</th><th>Otros datos</th><th></th></tr></thead>
           <tbody id="rows"></tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="features" aria-label="Características">
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><path d="M14.5 5 13 3h-2L9.5 5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4.5Z"/><circle cx="12" cy="12.5" r="4"/></svg></div>
+        <div><strong>Fotos desde el celular</strong><p>Sacá la foto en el momento o elegí imágenes que ya tengas guardadas.</p></div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+        <div><strong>Impresos y manuscritos</strong><p>Lee comprobantes impresos y también los escritos a mano.</p></div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16M9 5v14M16 5v14"/></svg></div>
+        <div><strong>Todo en un Excel</strong><p>Fecha, número, CUIT, proveedor y montos, cada comprobante en su fila.</p></div>
       </div>
     </section>
   </main>
@@ -306,27 +357,49 @@
         dropzone: document.getElementById('dropzone'), cameraBtn: document.getElementById('cameraBtn'), filesBtn: document.getElementById('filesBtn'),
         cameraInput: document.getElementById('cameraInput'), fileInput: document.getElementById('fileInput'), workPanel: document.getElementById('workPanel'),
         count: document.getElementById('count'), rows: document.getElementById('rows'), addMoreBtn: document.getElementById('addMoreBtn'), addRowBtn: document.getElementById('addRowBtn'),
-        deleteSelectedBtn: document.getElementById('deleteSelectedBtn'), exportBtn: document.getElementById('exportBtn'), progressWrap: document.getElementById('progressWrap'), progressText: document.getElementById('progressText'),
+        deleteSelectedBtn: document.getElementById('deleteSelectedBtn'), convertBtn: document.getElementById('convertBtn'), exportBtn: document.getElementById('exportBtn'), progressWrap: document.getElementById('progressWrap'), progressText: document.getElementById('progressText'),
         progressPercent: document.getElementById('progressPercent'), progressBar: document.getElementById('progressBar'), reviewNotice: document.getElementById('reviewNotice'),
         errorNotice: document.getElementById('errorNotice'), previewDialog: document.getElementById('previewDialog'), previewImage: document.getElementById('previewImage'),
         previewName: document.getElementById('previewName'), closePreview: document.getElementById('closePreview'), extraDialog: document.getElementById('extraDialog'),
         extraTitle: document.getElementById('extraTitle'), extraList: document.getElementById('extraList'), extraEmpty: document.getElementById('extraEmpty'),
-        closeExtra: document.getElementById('closeExtra'), addExtraBtn: document.getElementById('addExtraBtn'), doneExtraBtn: document.getElementById('doneExtraBtn')
+        closeExtra: document.getElementById('closeExtra'), addExtraBtn: document.getElementById('addExtraBtn'), doneExtraBtn: document.getElementById('doneExtraBtn'),
+        geminiKey: document.getElementById('geminiKey'), geminiState: document.getElementById('geminiState'), geminiApply: document.getElementById('geminiApply')
       };
       var activeExtraId = null;
+      var geminiKey = '';
+      // Intermediario (Cloudflare Worker) que lee las fotos con Gemini usando
+      // una clave guardada como secreto del servidor: los usuarios no cargan
+      // ninguna clave. Si PROXY_URL queda vacía, la página usa la clave
+      // opcional que pegue el usuario o el lector del navegador.
+      var PROXY_URL = '';
+      function geminiAvailable() { return !!PROXY_URL || !!geminiKey; }
 
       function escapeHtml(value) {
         return String(value || '').replace(/[&<>'"]/g, function (char) { return ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'})[char]; });
       }
+      function pendingRecords() {
+        return records.filter(function (r) {
+          if (!r.file) return false;
+          if (r.status === 'queued') return true;
+          // Una lectura fallida se reintenta solo si la fila sigue vacía,
+          // para no pisar datos cargados a mano.
+          if (r.status === 'error') return !r.fecha && !r.numero && !r.cuit && !r.proveedor && !r.subtotal && !r.total && !(r.extra && r.extra.length);
+          return false;
+        });
+      }
       function updateCount() {
         var n = records.length;
         var selected = records.filter(function (r) { return selectedIds.has(r.id); }).length;
-        els.count.textContent = n + (n === 1 ? ' archivo' : ' archivos') + (selected ? ' · ' + selected + (selected === 1 ? ' seleccionado' : ' seleccionados') : '');
+        var pending = pendingRecords().length;
+        els.count.textContent = n + (n === 1 ? ' archivo' : ' archivos') + (pending ? ' · ' + pending + (pending === 1 ? ' por convertir' : ' por convertir') : '') + (selected ? ' · ' + selected + (selected === 1 ? ' seleccionado' : ' seleccionados') : '');
         els.workPanel.hidden = n === 0;
-        els.exportBtn.disabled = n === 0 || processing;
+        els.convertBtn.hidden = pending === 0;
+        els.convertBtn.disabled = processing;
+        document.getElementById('convertLabel').textContent = pending > 1 ? 'Convertir a tabla (' + pending + ')' : 'Convertir a tabla';
+        els.exportBtn.disabled = n === 0 || processing || records.some(function (r) { return r.status === 'queued' || r.status === 'processing'; });
         els.deleteSelectedBtn.disabled = selected === 0;
         els.deleteSelectedBtn.textContent = selected ? 'Eliminar seleccionadas (' + selected + ')' : 'Eliminar seleccionadas';
-        els.reviewNotice.hidden = n === 0;
+        els.reviewNotice.hidden = !records.some(function (r) { return r.status === 'done' || r.status === 'error'; });
       }
       function money(value) {
         if (!value) return '';
@@ -340,8 +413,9 @@
         els.rows.innerHTML = records.map(function (r) {
           var status = r.status === 'done' ? '<span class="status-pill"><span class="dot ok"></span>Listo</span>' :
             r.status === 'processing' ? '<span class="status-pill"><span class="dot busy"></span>Leyendo</span>' :
-            r.status === 'error' ? '<span class="status-pill"><span class="dot fail"></span>Revisar</span>' : '';
-          var image = r.url ? '<div class="thumb-wrap"><img class="thumb" src="' + r.url + '" alt="Miniatura de ' + escapeHtml(r.name) + '" data-preview="' + r.id + '" tabindex="0"><input class="photo-select" type="checkbox" data-select="' + r.id + '" aria-label="Seleccionar ' + escapeHtml(r.name) + '"' + (selectedIds.has(r.id) ? ' checked' : '') + '></div>' :
+            r.status === 'error' ? '<span class="status-pill"><span class="dot fail"></span>Revisar</span>' :
+            r.status === 'queued' ? '<span class="status-pill"><span class="dot"></span>En espera</span>' : '';
+          var image = r.url ? '<div class="thumb-wrap"><input class="photo-select" type="checkbox" data-select="' + r.id + '" aria-label="Seleccionar ' + escapeHtml(r.name) + '"' + (selectedIds.has(r.id) ? ' checked' : '') + '><img class="thumb" src="' + r.url + '" alt="Miniatura de ' + escapeHtml(r.name) + '" data-preview="' + r.id + '" tabindex="0"></div>' :
             '<div class="thumb" aria-hidden="true"></div>';
           return '<tr class="' + (selectedIds.has(r.id) ? 'is-selected' : '') + '" data-row="' + r.id + '">' +
             '<td class="image-cell" data-label="Imagen">' + image + status + '</td>' +
@@ -366,17 +440,24 @@
         render();
       }
       function validImage(file) { return file && /^image\/(jpeg|png|webp)$/i.test(file.type); }
-      async function handleFiles(fileList) {
+      function handleFiles(fileList) {
         var files = Array.prototype.slice.call(fileList || []).filter(validImage);
         if (!files.length) { showError('Elegí imágenes JPG, PNG o WEBP.'); return; }
         showError('');
-        var added = files.map(function (file) {
-          var rec = { id: nextId++, name: file.name, url: URL.createObjectURL(file), file: file, fecha: '', numero: '', cuit: '', proveedor: '', subtotal: '', total: '', texto: '', extra: [], status: 'queued' };
-          records.push(rec); return rec;
+        var wasEmpty = records.length === 0;
+        files.forEach(function (file) {
+          records.push({ id: nextId++, name: file.name, url: URL.createObjectURL(file), file: file, fecha: '', numero: '', cuit: '', proveedor: '', subtotal: '', total: '', texto: '', extra: [], status: 'queued' });
         });
         render();
-        await processRecords(added);
+        if (wasEmpty && records.length) {
+          var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          els.workPanel.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+        }
         els.cameraInput.value = ''; els.fileInput.value = '';
+      }
+      function convertPending() {
+        var pending = pendingRecords();
+        if (pending.length) processRecords(pending);
       }
       function normalizeText(text) { return String(text || '').replace(/\r/g, '\n').replace(/\n{2,}/g, '\n'); }
       function pick(text, patterns) {
@@ -545,15 +626,121 @@
         return (parsed.fecha ? 3 : 0) + (parsed.numero ? 4 : 0) + (parsed.cuit ? 4 : 0) +
           (parsed.proveedor ? 2 : 0) + (parsed.subtotal ? 2 : 0) + (parsed.total ? 5 : 0) + Math.min(3, (parsed.extra || []).length);
       }
+      function fileToBase64(file) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function () { resolve(String(reader.result).split(',')[1] || ''); };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+      var GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
+      function geminiHttpError(status, data) {
+        var detail = data && data.error && data.error.message ? String(data.error.message) : '';
+        detail = detail.replace(/\s+/g, ' ').trim().slice(0, 180);
+        if (status === 400 && /api key/i.test(detail)) return 'la clave no es válida';
+        if (status === 400) return 'Google rechazó el pedido' + (detail ? ': ' + detail : '');
+        if (status === 401 || status === 403) return 'la clave no tiene permiso o no es válida' + (detail ? ' (' + detail + ')' : '');
+        if (status === 404) return 'el modelo no está disponible para esta clave';
+        if (status === 429) return 'se alcanzó el límite gratuito de Gemini, esperá unos minutos';
+        return 'Google respondió ' + status + (detail ? ': ' + detail : '');
+      }
+      async function callGemini(parts) {
+        var body = JSON.stringify({ contents: [{ parts: parts }], generationConfig: { temperature: 0, responseMimeType: 'application/json' } });
+        if (PROXY_URL) {
+          var proxyController = window.AbortController ? new AbortController() : null;
+          var proxyTimer = proxyController ? window.setTimeout(function () { proxyController.abort(); }, 60000) : null;
+          try {
+            var proxyResponse = await fetch(PROXY_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: body,
+              signal: proxyController ? proxyController.signal : undefined
+            });
+            var proxyData = await proxyResponse.json().catch(function () { return null; });
+            if (!proxyResponse.ok) throw new Error(geminiHttpError(proxyResponse.status, proxyData));
+            return proxyData;
+          } catch (err) {
+            if (err && err.name === 'AbortError') throw new Error('Gemini tardó demasiado en responder');
+            if (err instanceof TypeError) throw new Error('no hubo conexión con el servicio de lectura');
+            throw err;
+          } finally {
+            if (proxyTimer) window.clearTimeout(proxyTimer);
+          }
+        }
+        var lastError = null;
+        for (var m = 0; m < GEMINI_MODELS.length; m++) {
+          var controller = window.AbortController ? new AbortController() : null;
+          var timer = controller ? window.setTimeout(function () { controller.abort(); }, 60000) : null;
+          try {
+            var response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODELS[m] + ':generateContent', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
+              body: body,
+              signal: controller ? controller.signal : undefined
+            });
+            var data = await response.json().catch(function () { return null; });
+            if (!response.ok) {
+              lastError = new Error(geminiHttpError(response.status, data));
+              if (response.status === 404) continue;
+              throw lastError;
+            }
+            return data;
+          } catch (err) {
+            if (err && err.name === 'AbortError') throw new Error('Gemini tardó demasiado en responder');
+            if (err instanceof TypeError) throw new Error('no hubo conexión con Google');
+            throw err;
+          } finally {
+            if (timer) window.clearTimeout(timer);
+          }
+        }
+        throw lastError || new Error('Gemini no respondió');
+      }
+      async function readWithGemini(file) {
+        var base64 = await fileToBase64(file);
+        var prompt = 'Sos un lector de comprobantes argentinos (facturas, tickets y recibos, impresos o escritos a mano). Analizá la imagen y devolvé SOLO un objeto JSON válido, sin texto extra, con estas claves: "fecha" (fecha de emisión tal como aparece), "numero" (número de comprobante; si hay punto de venta y número, unilos con un guión), "cuit" (CUIT del emisor), "proveedor" (nombre o razón social del comercio o emisor, nunca el cliente), "subtotal" y "total" (importes tal como aparecen, sin el signo $), "extra" (lista de objetos {"label", "value"} con cualquier otro dato rotulado que aparezca: tipo de comprobante, punto de venta, CAE, forma de pago, IVA, domicilio, etc.) y "texto" (transcripción completa de todo el texto legible). Si un dato no aparece o no se lee, dejalo como cadena vacía. No inventes valores.';
+        var data = await callGemini([{ text: prompt }, { inline_data: { mime_type: file.type || 'image/jpeg', data: base64 } }]);
+        if (data.promptFeedback && data.promptFeedback.blockReason) throw new Error('Google bloqueó la lectura de esta foto');
+        var parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+        var raw = parts.map(function (p) { return p.text || ''; }).join('').replace(/```json|```/g, '').trim();
+        var start = raw.indexOf('{'), end = raw.lastIndexOf('}');
+        if (start === -1 || end <= start) throw new Error('Gemini no devolvió datos legibles de la foto');
+        var parsed = JSON.parse(raw.slice(start, end + 1));
+        var extra = Array.isArray(parsed.extra) ? parsed.extra.filter(function (item) { return item && item.label && item.value; }).map(function (item) { return { label: String(item.label).slice(0, 42), value: String(item.value).slice(0, 100) }; }).slice(0, 18) : [];
+        return {
+          fecha: String(parsed.fecha || '').trim(),
+          numero: String(parsed.numero || '').replace(/\s+/g, ''),
+          cuit: String(parsed.cuit || '').replace(/\s+/g, ''),
+          proveedor: String(parsed.proveedor || '').trim(),
+          subtotal: money(parsed.subtotal),
+          total: money(parsed.total),
+          extra: extra,
+          texto: String(parsed.texto || '')
+        };
+      }
       async function processRecords(list) {
         if (processing) return;
-        if (!window.Tesseract) {
+        if (!geminiAvailable() && !window.Tesseract) {
           list.forEach(function (r) { r.status = 'error'; }); render();
           showError('No se pudo cargar el lector de imágenes. Revisá tu conexión e intentá de nuevo. También podés completar las filas a mano.'); return;
         }
-        processing = true; els.exportBtn.disabled = true; els.progressWrap.hidden = false;
+        processing = true; updateCount(); els.progressWrap.hidden = false;
+        var geminiFailed = false;
+        var geminiErrorDetail = '';
         for (var i = 0; i < list.length; i++) {
           var rec = list[i]; rec.status = 'processing'; render();
+          var handledByGemini = false;
+          if (geminiAvailable()) {
+            try {
+              setProgress('Leyendo con Gemini ' + rec.name, (i / list.length) * 100);
+              var geminiData = await readWithGemini(rec.file);
+              Object.assign(rec, geminiData);
+              rec.status = receiptDataScore(geminiData) ? 'done' : 'error';
+              handledByGemini = true;
+            } catch (geminiErr) { geminiFailed = true; if (!geminiErrorDetail && geminiErr && geminiErr.message) geminiErrorDetail = geminiErr.message; }
+          }
+          if (handledByGemini) { render(); continue; }
+          if (!window.Tesseract) { rec.status = 'error'; render(); continue; }
           try {
             var image = await preprocess(rec.file, 'soft');
             var logger = (function (index, name) {
@@ -586,7 +773,8 @@
           }
           render();
         }
-        processing = false; setProgress('Lectura terminada', 100); els.exportBtn.disabled = records.length === 0;
+        processing = false; setProgress('Lectura terminada', 100); updateCount();
+        if (geminiFailed) showError('Gemini no respondió' + (geminiErrorDetail ? ' (' + geminiErrorDetail + ')' : '') + '. Las fotos se leyeron con el lector del navegador.');
         window.setTimeout(function () { if (!processing) els.progressWrap.hidden = true; }, 1300);
       }
       function deleteSelected() {
@@ -637,11 +825,52 @@
         els.extraDialog.showModal();
       }
       function closeExtraDialog() { els.extraDialog.close(); activeExtraId = null; render(); }
+      if (PROXY_URL) {
+        var geminiRow = els.geminiKey.closest('.gemini-row');
+        if (geminiRow) geminiRow.style.display = 'none';
+        els.geminiState.textContent = 'Automática: las fotos se leen con Gemini al convertir, no necesitás clave';
+        els.geminiState.classList.add('on');
+        var geminiNote = document.querySelector('.gemini-note');
+        if (geminiNote) geminiNote.textContent = 'La lectura con Gemini ya viene activada en esta página.';
+      }
+      var geminiTesting = false;
+      async function applyGeminiKey() {
+        geminiKey = els.geminiKey.value.trim();
+        if (!geminiKey) {
+          els.geminiState.textContent = 'Pegá una clave y tocá «Usar clave» para activar Gemini';
+          els.geminiState.classList.remove('on', 'error');
+          els.geminiKey.focus();
+          return;
+        }
+        if (geminiTesting) return;
+        geminiTesting = true;
+        els.geminiApply.disabled = true;
+        els.geminiState.textContent = 'Probando la clave con Google…';
+        els.geminiState.classList.remove('on', 'error');
+        try {
+          await callGemini([{ text: 'Devolvé únicamente este objeto JSON: {"ok": true}' }]);
+          els.geminiState.textContent = 'Activada: las fotos se leen con Gemini al convertir';
+          els.geminiState.classList.add('on');
+        } catch (err) {
+          els.geminiState.textContent = 'La clave no funcionó: ' + (err && err.message ? err.message : 'sin conexión') + '. Sin Gemini se usa el lector del navegador.';
+          els.geminiState.classList.add('error');
+        }
+        geminiTesting = false;
+        els.geminiApply.disabled = false;
+      }
+      els.geminiKey.addEventListener('input', function () {
+        geminiKey = els.geminiKey.value.trim();
+        els.geminiState.textContent = geminiKey ? 'Clave escrita: tocá «Usar clave» para probarla y activar Gemini' : 'Opcional: lee mejor la letra manuscrita';
+        els.geminiState.classList.remove('on', 'error');
+      });
+      els.geminiApply.addEventListener('click', applyGeminiKey);
+      els.geminiKey.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); applyGeminiKey(); } });
       els.cameraBtn.addEventListener('click', function () { els.cameraInput.click(); });
       els.filesBtn.addEventListener('click', function () { els.fileInput.click(); });
       els.addMoreBtn.addEventListener('click', function () { els.fileInput.click(); });
       els.addRowBtn.addEventListener('click', addManualRow);
       els.deleteSelectedBtn.addEventListener('click', deleteSelected);
+      els.convertBtn.addEventListener('click', convertPending);
       els.exportBtn.addEventListener('click', exportExcel);
       els.cameraInput.addEventListener('change', function (e) { handleFiles(e.target.files); });
       els.fileInput.addEventListener('change', function (e) { handleFiles(e.target.files); });
